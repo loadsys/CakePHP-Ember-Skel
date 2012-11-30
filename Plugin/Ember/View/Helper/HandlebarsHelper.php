@@ -83,7 +83,7 @@ class HandlebarsHelper extends AppHelper {
 		$normalized = str_replace('_', '-', $parts[0]);
 		$parts = explode('-', $normalized);
 		$first = array_shift($parts);
-		return $first . implode('', array_walk('ucfirst', $parts));
+		return $first . implode('', array_map('ucfirst', $parts));
 	}
 
 	/**
