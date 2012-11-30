@@ -84,7 +84,7 @@ module.exports = function(grunt) {
       app: {
         src: ['<%= distDir %>/application.min.js'],
         dest: '<%= distDir %>/application.min.js',
-        wrapper: ['(function() {', '})();']
+        wrapper: ['(function(){', '})();']
       }
     },
     watch: {
