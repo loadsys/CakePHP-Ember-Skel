@@ -80,7 +80,10 @@ class HandlebarsHelper extends AppHelper {
 	 */
 	protected function _templateName($path) {
 		$parts = explode('.', $this->_fileName($path));
-		return str_replace('_', '-', $parts[0]);
+		$normalized = str_replace('_', '-', $parts[0]);
+		$parts = explode('-', $normalized);
+		$first = array_shift($parts);
+		return $first . implode('', array_walk('ucfirst', $parts));
 	}
 
 	/**
