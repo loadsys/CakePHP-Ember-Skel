@@ -15,8 +15,7 @@
 		'dist/libraries',
 		'dist/setup',
 		'dist/application',
-		'dist/initialize',
-		'app/Config/seed'
-	)); ?>)
+		'dist/initialize'
+	)); ?>
 </body>
 </html>

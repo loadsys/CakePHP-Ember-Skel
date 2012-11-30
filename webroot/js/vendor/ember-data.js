@@ -1237,7 +1237,7 @@ DS.Store = Ember.Object.extend(DS._Mappable, {
   _adapter: Ember.computed(function() {
     var adapter = get(this, 'adapter');
     if (typeof adapter === 'string') {
-      adapter = get(this, adapter, false) || get(Ember.lookup, adapter);
+      adapter = get(this, adapter, false) || get(window, adapter);
     }
 
     if (DS.Adapter.detect(adapter)) {
@@ -3871,7 +3871,7 @@ DS.belongsTo = function(type, options) {
         store = get(this, 'store'), id;
 
     if (typeof type === 'string') {
-      type = get(this, type, false) || get(Ember.lookup, type);
+      type = get(this, type, false) || get(window, type);
     }
 
     id = data[key];
@@ -3934,7 +3934,7 @@ var hasAssociation = function(type, options) {
         ids, association;
 
     if (typeof type === 'string') {
-      type = get(this, type, false) || get(Ember.lookup, type);
+      type = get(this, type, false) || get(window, type);
     }
 
     ids = data[key];
@@ -3958,38 +3958,9 @@ DS.hasMany = function(type, options) {
 (function() {
 var get = Ember.get, set = Ember.set;
 
-/**
-  @private
-
-  This file defines several extensions to the base `DS.Model` class that
-  add support for one-to-many relationships.
-*/
-
 DS.Model.reopen({
-  // This Ember.js hook allows an object to be notified when a property
-  // is defined.
-  //
-  // In this case, we use it to be notified when an Ember Data user defines a
-  // belongs-to relationship. In that case, we need to set up observers for
-  // each one, allowing us to track relationship changes and automatically
-  // reflect changes in the inverse has-many array.
-  //
-  // This hook passes the class being set up, as well as the key and value
-  // being defined. So, for example, when the user does this:
-  //
-  //   DS.Model.extend({
-  //     parent: DS.belongsTo(App.User)
-  //   });
-  //
-  // This hook would be called with "parent" as the key and the computed
-  // property returned by `DS.belongsTo` as the value.
   didDefineProperty: function(proto, key, value) {
-    // Check if the value being set is a computed property.
     if (value instanceof Ember.Descriptor) {
-
-      // If it is, get the metadata for the association. This is
-      // populated by the `DS.belongsTo` helper when it is creating
-      // the computed property.
       var meta = value.meta();
 
       if (meta.isAssociation && meta.kind === 'belongsTo') {
@@ -4000,118 +3971,37 @@ DS.Model.reopen({
   }
 });
 
-/**
-  These DS.Model extensions add class methods that provide relationship
-  introspection abilities about relationships.
-
-  A note about the computed properties contained here:
-
-  **These properties are effectively sealed once called for the first time.**
-  To avoid repeatedly doing expensive iteration over a model's fields, these
-  values are computed once and then cached for the remainder of the runtime of
-  your application.
-
-  If your application needs to modify a class after its initial definition
-  (for example, using `reopen()` to add additional attributes), make sure you
-  do it before using your model with the store, which uses these properties
-  extensively.
-*/
-
 DS.Model.reopenClass({
-  /**
-    For a given relationship name, returns the model type of the relationship.
-
-    For example, if you define a model like this:
-
-        App.Post = DS.Model.extend({
-          comments: DS.hasMany(App.Comment)
-        });
-
-    Calling `App.Post.typeForAssociation('comments')` will return `App.Comment`.
-
-    @param {String} name the name of the association
-    @return {subclass of DS.Model} the type of the association, or undefined
-  */
   typeForAssociation: function(name) {
     var association = get(this, 'associationsByName').get(name);
     return association && association.type;
   },
 
-  /**
-    The model's associations as a map, keyed on the type of the
-    association. The value of each entry is an array containing a descriptor
-    for each association with that type, describing the name of the association
-    as well as the type.
-
-    For example, given the following model definition:
-
-        App.Blog = DS.Model.extend({
-          users: DS.hasMany(App.User),
-          owner: DS.belongsTo(App.User),
-
-          posts: DS.hasMany(App.Post)
-        });
-
-    This computed property would return a map describing these
-    associations, like this:
-
-        var associations = Ember.get(App.Blog, 'associations');
-        associatons.get(App.User);
-        //=> [ { name: 'users', kind: 'hasMany' },
-        //     { name: 'owner', kind: 'belongsTo' } ]
-        associations.get(App.Post);
-        //=> [ { name: 'posts', kind: 'hasMany' } ]
-
-    @type Ember.Map
-    @readOnly
-  */
   associations: Ember.computed(function() {
-    var map = new Ember.MapWithDefault({
-      defaultValue: function() { return []; }
-    });
+    var map = Ember.Map.create();
 
-    // Loop through each computed property on the class
     this.eachComputedProperty(function(name, meta) {
-
-      // If the computed property is an association, add
-      // it to the map.
       if (meta.isAssociation) {
-        if (typeof meta.type === 'string') {
-          meta.type = Ember.get(Ember.lookup, meta.type);
+        var type = meta.type,
+            typeList = map.get(type);
+
+        if (typeof type === 'string') {
+          type = get(this, type, false) || get(window, type);
+          meta.type = type;
         }
 
-        var associationsForType = map.get(meta.type);
+        if (!typeList) {
+          typeList = [];
+          map.set(type, typeList);
+        }
 
-        associationsForType.push({ name: name, kind: meta.kind });
+        typeList.push({ name: name, kind: meta.kind });
       }
     });
 
     return map;
   }),
 
-  /**
-    A hash containing lists of the model's associations, grouped
-    by the association kind. For example, given a model with this
-    definition:
-
-        App.Blog = DS.Model.extend({
-          users: DS.hasMany(App.User),
-          owner: DS.belongsTo(App.User),
-
-          posts: DS.hasMany(App.Post)
-        });
-
-    This property would contain the following:
-
-       var associationNames = Ember.get(App.Blog, 'associationNames');
-       associationNames.hasMany;
-       //=> ['users', 'posts']
-       associationNames.belongsTo;
-       //=> ['owner']
-
-    @type Object
-    @readOnly
-  */
   associationNames: Ember.computed(function() {
     var names = { hasMany: [], belongsTo: [] };
 
@@ -4124,31 +4014,6 @@ DS.Model.reopenClass({
     return names;
   }),
 
-  /**
-    A map whose keys are the associations of a model and whose values are
-    association descriptors.
-
-    For example, given a model with this
-    definition:
-
-        App.Blog = DS.Model.extend({
-          users: DS.hasMany(App.User),
-          owner: DS.belongsTo(App.User),
-
-          posts: DS.hasMany(App.Post)
-        });
-
-    This property would contain the following:
-
-       var associationsByName = Ember.get(App.Blog, 'associationsByName');
-       associationsByName.get('users');
-       //=> { key: 'users', kind: 'hasMany', type: App.User }
-       associationsByName.get('owner');
-       //=> { key: 'owner', kind: 'belongsTo', type: App.User }
-
-    @type Ember.Map
-    @readOnly
-  */
   associationsByName: Ember.computed(function() {
     var map = Ember.Map.create(), type;
 
@@ -4158,7 +4023,7 @@ DS.Model.reopenClass({
         type = meta.type;
 
         if (typeof type === 'string') {
-          type = get(this, type, false) || get(Ember.lookup, type);
+          type = get(this, type, false) || get(window, type);
           meta.type = type;
         }
 
@@ -4169,36 +4034,6 @@ DS.Model.reopenClass({
     return map;
   }),
 
-  /**
-    A map whose keys are the fields of the model and whose values are strings
-    describing the kind of the field. A model's fields are the union of all of its
-    attributes and relationships.
-
-    For example:
-
-        App.Blog = DS.Model.extend({
-          users: DS.hasMany(App.User),
-          owner: DS.belongsTo(App.User),
-
-          posts: DS.hasMany(App.Post),
-
-          title: DS.attr('string')
-        });
-
-        var fields = Ember.get(App.Blog, 'fields');
-        fields.forEach(function(field, kind) {
-          console.log(field, kind);
-        });
-
-        // prints:
-        // users, hasMany
-        // owner, belongsTo
-        // posts, hasMany
-        // title, attribute
-
-    @type Ember.Map
-    @readOnly
-  */
   fields: Ember.computed(function() {
     var map = Ember.Map.create(), type;
 
@@ -4213,14 +4048,6 @@ DS.Model.reopenClass({
     return map;
   }),
 
-  /**
-    Given a callback, iterates over each of the associations in the model,
-    invoking the callback with the name of each association and its association
-    descriptor.
-
-    @param {Function} callback the callback to invoke
-    @param {any} binding the value to which the callback's `this` should be bound
-  */
   eachAssociation: function(callback, binding) {
     get(this, 'associationsByName').forEach(function(name, association) {
       callback.call(binding, name, association);
@@ -4229,51 +4056,12 @@ DS.Model.reopenClass({
 });
 
 DS.Model.reopen({
-  /**
-    Given a callback, iterates over each of the associations in the model,
-    invoking the callback with the name of each association and its association
-    descriptor.
-
-    @param {Function} callback the callback to invoke
-    @param {any} binding the value to which the callback's `this` should be bound
-  */
   eachAssociation: function(callback, binding) {
     this.constructor.eachAssociation(callback, binding);
   }
 });
 
-/**
-  @private
-
-  Helper method to look up the name of the inverse of an association.
-
-  In a has-many relationship, there are always two sides: the `belongsTo` side
-  and the `hasMany` side. When one side changes, the other side should be updated
-  automatically.
-
-  Given a model, the model of the inverse, and the kind of the association, this
-  helper returns the name of the association on the inverse.
-
-  For example, imagine the following two associated models:
-
-      App.Post = DS.Model.extend({
-        comments: DS.hasMany('App.Comment')
-      });
-
-      App.Comment = DS.Model.extend({
-        post: DS.belongsTo('App.Post')
-      });
-
-  If the `post` property of a `Comment` was modified, Ember Data would invoke
-  this helper like this:
-
-      DS._inverseNameFor(App.Comment, App.Post, 'hasMany');
-      //=> 'comments'
-
-  Ember Data uses the name of the association returned to reflect the changed
-  relationship on the other side.
-*/
-DS._inverseNameFor = function(modelType, inverseModelType, inverseAssociationKind) {
+DS.inverseNameFor = function(modelType, inverseModelType, inverseAssociationKind) {
   var associationMap = get(modelType, 'associations'),
       possibleAssociations = associationMap.get(inverseModelType),
       possible, actual, oldValue;
@@ -4292,23 +4080,7 @@ DS._inverseNameFor = function(modelType, inverseModelType, inverseAssociationKin
   if (actual) { return actual.name; }
 };
 
-/**
-  @private
-
-  Given a model and an association name, returns the model type of
-  the named association.
-
-      App.Post = DS.Model.extend({
-        comments: DS.hasMany('App.Comment')
-      });
-
-      DS._inverseTypeFor(App.Post, 'comments');
-      //=> App.Comment
-  @param {DS.Model class} modelType
-  @param {String} associationName
-  @return {DS.Model class}
-*/
-DS._inverseTypeFor = function(modelType, associationName) {
+DS.inverseTypeFor = function(modelType, associationName) {
   var associations = get(modelType, 'associationsByName'),
       association = associations.get(associationName);
 
@@ -4410,7 +4182,7 @@ DS.OneToManyChange.prototype = {
       if (!parent) { return; }
 
       var childType = store.typeForClientId(this.child);
-      var inverseType = DS._inverseTypeFor(childType, this.belongsToName);
+      var inverseType = DS.inverseTypeFor(childType, this.belongsToName);
       name = inverseHasManyName(inverseType, childType, this.belongsToName);
       this.hasManyName = name;
     }
@@ -4432,7 +4204,7 @@ DS.OneToManyChange.prototype = {
 
       var childType = store.typeForClientId(this.child);
       var parentType = store.typeForClientId(parent);
-      name = DS._inverseNameFor(childType, parentType, 'belongsTo', this.hasManyName);
+      name = DS.inverseNameFor(childType, parentType, 'belongsTo', this.hasManyName);
 
       this.belongsToName = name;
     }
@@ -4688,7 +4460,7 @@ function inverseBelongsToName(parentType, childType, hasManyName) {
     return belongsToName;
   }
 
-  return DS._inverseNameFor(childType, parentType, 'belongsTo');
+  return DS.inverseNameFor(childType, parentType, 'belongsTo');
 }
 
 function inverseHasManyName(parentType, childType, belongsToName) {
@@ -4699,7 +4471,7 @@ function inverseHasManyName(parentType, childType, belongsToName) {
     return hasManyName;
   }
 
-  return DS._inverseNameFor(parentType, childType, 'hasMany');
+  return DS.inverseNameFor(parentType, childType, 'hasMany');
 }
 
 })();
@@ -4715,43 +4487,11 @@ function inverseHasManyName(parentType, childType, belongsToName) {
 (function() {
 var set = Ember.set;
 
-/**
-  This code registers an injection for Ember.Application.
-
-  If an Ember.js developer defines a subclass of DS.Store on their application,
-  this code will automatically instantiate it and make it available on the
-  router.
-
-  Additionally, after an application's controllers have been injected, they will
-  each have the store made available to them.
-
-  For example, imagine an Ember.js application with the following classes:
-
-  App.Store = DS.Store.extend({
-    adapter: 'App.MyCustomAdapter'
-  });
-
-  App.PostsController = Ember.ArrayController.extend({
-    // ...
-  });
-
-  When the application is initialized, `App.Store` will automatically be
-  instantiated, and the instance of `App.PostsController` will have its `store`
-  property set to that instance.
-
-  Note that this code will only be run if the `ember-application` package is
-  loaded. If Ember Data is being used in an environment other than a
-  typical application (e.g., node.js where only `ember-runtime` is available),
-  this code will be ignored.
-*/
-
 Ember.onLoad('Ember.Application', function(Application) {
   Application.registerInjection({
     name: "store",
     before: "controllers",
 
-    // If a store subclass is defined, like App.Store,
-    // instantiate it and inject it into the router.
     injection: function(app, stateManager, property) {
       if (!stateManager) { return; }
       if (property === 'Store') {
@@ -4764,8 +4504,6 @@ Ember.onLoad('Ember.Application', function(Application) {
     name: "giveStoreToControllers",
     after: ['store','controllers'],
 
-    // For each controller, set its `store` property
-    // to the DS.Store instance we created above.
     injection: function(app, stateManager, property) {
       if (!stateManager) { return; }
       if (/^[A-Z].*Controller$/.test(property)) {
@@ -6254,7 +5992,7 @@ DS.RESTAdapter = DS.Adapter.extend({
         this.didCreateRecord(store, type, record, json);
       },
       error: function(xhr) {
-        this.didError(store, type, record, xhr);
+        this.context.didError(store, type, record, xhr);
       }
     });
   },
@@ -6330,7 +6068,7 @@ DS.RESTAdapter = DS.Adapter.extend({
         this.didUpdateRecord(store, type, record, json);
       },
       error: function(xhr) {
-        this.didError(store, type, record, xhr);
+        this.context.didError(store, type, record, xhr);
       }
     });
   },
