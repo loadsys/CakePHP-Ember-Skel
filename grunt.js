@@ -1,6 +1,8 @@
 /*global module:false*/
 module.exports = function(grunt) {
 
+  grunt.loadNpmTasks('grunt-wrap');
+
   // Project configuration.
   grunt.initConfig({
     pkg: '<json:package.json>',
@@ -78,6 +80,13 @@ module.exports = function(grunt) {
         separator: ';'
       }
     },
+    wrap: {
+      app: {
+        src: ['<%= distDir %>/application.min.js'],
+        dest: '<%= distDir %>/application.min.js',
+        wrapper: ['(function() {', '})();']
+      }
+    },
     watch: {
       files: '<%= appDir %>/**/*.js',
       tasks: 'concat'
@@ -88,5 +97,5 @@ module.exports = function(grunt) {
   grunt.registerTask('default', 'concat');
 
   // Build task.
-  grunt.registerTask('build', 'concat min');
+  grunt.registerTask('build', 'concat min wrap');
 };
