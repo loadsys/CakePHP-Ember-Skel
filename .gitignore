@@ -1,0 +1,5 @@
+tmp/*
+Config/cake.php
+Config/database.php
+Lib/Cake
+webroot/js/dist

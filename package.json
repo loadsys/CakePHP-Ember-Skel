@@ -1,0 +1,10 @@
+{
+  "name": "Project Name",
+  "version": "0.0.0",
+  "description": "Project Description",
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "grunt": "~0.3.17"
+  }
+}

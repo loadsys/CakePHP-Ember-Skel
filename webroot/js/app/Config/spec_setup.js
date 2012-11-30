@@ -1,0 +1,1 @@
+App = Ember.Namespace.create();
