@@ -12,7 +12,8 @@
     'dist/libraries',
     'dist/spec_libs',
     'dist/spec_setup',
-    'dist/application'
+    'dist/application',
+    'dist/spec_init'
   )); ?>
   <script>
     mocha.setup('bdd');

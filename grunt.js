@@ -19,11 +19,17 @@ module.exports = function(grunt) {
     specsDir:  'webroot/js/specs',
     concat: {
       setup: {
-        src: ['<%= appDir %>/Config/setup.js'],
+        src: [
+          '<%= appDir %>/Config/setup.js',
+          '<%= appDir %>/Config/utilities.js'
+        ],
         dest: '<%= distDir %>/setup.js'
       },
       specSetup: {
-        src: ['<%= appDir %>/Config/spec_setup.js'],
+        src: [
+          '<%= appDir %>/Config/spec_setup.js',
+          '<%= appDir %>/Config/utilities.js'
+        ],
         dest: '<%= distDir %>/spec_setup.js'
       },
       libs: {
@@ -48,6 +54,10 @@ module.exports = function(grunt) {
           '<%= appDir %>/Config/seed.js'
         ],
         dest: '<%= distDir %>/initialize.js'
+      },
+      specInit: {
+        src: ['<%= appDir %>/Config/fixtures.js'],
+        dest: '<%= distDir %>/spec_init.js'
       },
       app: {
         src: [
