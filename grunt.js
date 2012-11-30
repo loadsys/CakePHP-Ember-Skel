@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     appDir:    'webroot/js/app',
     vendorDir: 'webroot/js/vendor',
     distDir:   'webroot/js/dist',
-    specsDir:   'webroot/js/specs',
+    specsDir:  'webroot/js/specs',
     concat: {
       setup: {
         src: ['<%= appDir %>/Config/setup.js'],
@@ -64,40 +64,24 @@ module.exports = function(grunt) {
       }
     },
     min: {
-      setup: {
-        src: ['<%= distDir %>/setup.js'],
-        dest: '<%= distDir %>/setup.min.js'
-      },
-      specSetup: {
-        src: ['<%= distDir %>/spec_setup.js'],
-        dest: '<%= distDir %>/spec_setup.min.js'
-      },
       libs: {
         src: ['<%= distDir %>/libraries.js'],
         dest: '<%= distDir %>/libraries.min.js'
       },
-      specLibs: {
-        src: ['<%= distDir %>/spec_libs.js'],
-        dest: '<%= distDir %>/spec_libs.min.js'
-      },
-      init: {
-        src: ['<%= distDir %>/initialize.js'],
-        dest: '<%= distDir %>/initialize.min.js'
-      },
       app: {
-        src: ['<%= distDir %>/application.js'],
-        dest: '<%= distDir %>/application.min.js'
-      },
-      specs: {
-        src: ['<%= distDir %>/specs.js'],
-        dest: '<%= distDir %>/specs.min.js'
+        src: [
+          '<%= distDir %>/setup.js',
+          '<%= distDir %>/application.js',
+          '<%= distDir %>/initialize.js'
+        ],
+        dest: '<%= distDir %>/application.min.js',
+        separator: ';'
       }
     },
     watch: {
       files: '<%= appDir %>/**/*.js',
       tasks: 'concat'
-    },
-    uglify: {}
+    }
   });
 
   // Default task.

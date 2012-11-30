@@ -11,11 +11,15 @@
 </head>
 <body>
 	<?php echo $this->Handlebars->templates('js/app/Template'); ?>
-	<?php echo $this->Html->script(array(
-		'dist/libraries',
-		'dist/setup',
-		'dist/application',
-		'dist/initialize'
-	)); ?>
+	<?php if (Configure::read('debug')): ?>
+		<?php echo $this->Html->script(array(
+			'dist/libraries',
+			'dist/setup',
+			'dist/application',
+			'dist/initialize'
+		)); ?>
+	<?php else: ?>
+		<?php echo $this->Html->script(array('dist/libraries.min', 'dist/application.min')); ?>
+	<?php endif; ?>
 </body>
 </html>
