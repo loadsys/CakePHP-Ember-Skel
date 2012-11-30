@@ -97,5 +97,5 @@ module.exports = function(grunt) {
   grunt.registerTask('default', 'concat');
 
   // Build task.
-  grunt.registerTask('build', 'concat min wrap');
+  grunt.registerTask('build', 'concat min');
 };
