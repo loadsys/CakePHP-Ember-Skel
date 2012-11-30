@@ -14,10 +14,15 @@ module.exports = function(grunt) {
     appDir:    'webroot/js/app',
     vendorDir: 'webroot/js/vendor',
     distDir:   'webroot/js/dist',
+    specsDir:   'webroot/js/specs',
     concat: {
       setup: {
         src: ['<%= appDir %>/Config/setup.js'],
         dest: '<%= distDir %>/setup.js'
+      },
+      specSetup: {
+        src: ['<%= appDir %>/Config/spec_setup.js'],
+        dest: '<%= distDir %>/spec_setup.js'
       },
       libs: {
         src: [
@@ -27,6 +32,13 @@ module.exports = function(grunt) {
           '<%= vendorDir %>/ember-data.js'
         ],
         dest: '<%= distDir %>/libraries.js'
+      },
+      specLibs: {
+        src: [
+          '<%= vendorDir %>/mocha.js',
+          '<%= vendorDir %>/chai.js'
+        ],
+        dest: '<%= distDir %>/spec_libs.js'
       },
       init: {
         src: [
@@ -45,6 +57,10 @@ module.exports = function(grunt) {
           '<%= appDir %>/Config/router.js'
         ],
         dest: '<%= distDir %>/application.js'
+      },
+      specs: {
+        src: ['<%= specsDir %>/**/*.js'],
+        dest: '<%= distDir %>/specs.js'
       }
     },
     min: {
@@ -52,9 +68,17 @@ module.exports = function(grunt) {
         src: ['<%= distDir %>/setup.js'],
         dest: '<%= distDir %>/setup.min.js'
       },
+      specSetup: {
+        src: ['<%= distDir %>/spec_setup.js'],
+        dest: '<%= distDir %>/spec_setup.min.js'
+      },
       libs: {
         src: ['<%= distDir %>/libraries.js'],
         dest: '<%= distDir %>/libraries.min.js'
+      },
+      specLibs: {
+        src: ['<%= distDir %>/spec_libs.js'],
+        dest: '<%= distDir %>/spec_libs.min.js'
       },
       init: {
         src: ['<%= distDir %>/initialize.js'],
@@ -63,6 +87,10 @@ module.exports = function(grunt) {
       app: {
         src: ['<%= distDir %>/application.js'],
         dest: '<%= distDir %>/application.min.js'
+      },
+      specs: {
+        src: ['<%= distDir %>/specs.js'],
+        dest: '<%= distDir %>/specs.min.js'
       }
     },
     watch: {
