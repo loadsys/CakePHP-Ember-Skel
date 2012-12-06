@@ -36,7 +36,7 @@ module.exports = function(grunt) {
         src: [
           '<%= vendorDir %>/jquery-1.8.3.js',
           '<%= vendorDir %>/handlebars-1.0.0.beta.6.js',
-          '<%= vendorDir %>/ember-1.0.0-pre.2.js',
+          '<%= vendorDir %>/ember.js',
           '<%= vendorDir %>/ember-data.js'
         ],
         dest: '<%= distDir %>/libraries.js'
@@ -62,8 +62,9 @@ module.exports = function(grunt) {
       app: {
         src: [
           '<%= appDir %>/Model/*.js',
-          '<%= appDir %>/Controller/ApplicationController.js',
-          '<%= appDir %>/View/ApplicationView.js',
+          '<%= appDir %>/Controller/*.js',
+          '<%= appDir %>/View/*.js',
+          // Routes are typically nested so their load order needs to be defined
           '<%= appDir %>/Route/ApplicationRoute.js',
           // The router.js must be last
           '<%= appDir %>/Config/router.js'
@@ -88,13 +89,6 @@ module.exports = function(grunt) {
         ],
         dest: '<%= distDir %>/application.min.js',
         separator: ';'
-      }
-    },
-    wrap: {
-      app: {
-        src: ['<%= distDir %>/application.min.js'],
-        dest: '<%= distDir %>/application.min.js',
-        wrapper: ['(function(){', '})();']
       }
     },
     watch: {

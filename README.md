@@ -1,0 +1,1 @@
+# CakePHP Ember.js Project Bake Skeleton
