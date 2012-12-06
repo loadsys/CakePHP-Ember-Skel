@@ -21,7 +21,8 @@
   </script>
   <?php echo $this->Html->script('dist/specs'); ?>
   <script>
-    mocha.run();
+    if (window.mochaPhantomJS) { mochaPhantomJS.run(); }
+    else { mocha.run(); }
   </script>
 </body>
 </html>

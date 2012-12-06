@@ -5,6 +5,7 @@
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
-    "grunt": "~0.3.17"
+    "grunt": "~0.3.17",
+    "mocha-phantomjs": "~1.1.0"
   }
 }
