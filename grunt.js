@@ -64,10 +64,8 @@ module.exports = function(grunt) {
           '<%= appDir %>/Model/*.js',
           '<%= appDir %>/Controller/*.js',
           '<%= appDir %>/View/*.js',
-          // Routes are typically nested so their load order needs to be defined
-          '<%= appDir %>/Route/ApplicationRoute.js',
-          // The router.js must be last
-          '<%= appDir %>/Config/router.js'
+          '<%= appDir %>/Config/router.js',
+          '<%= appDir %>/Route/*.js',
         ],
         dest: '<%= distDir %>/application.js'
       },

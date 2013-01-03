@@ -1,4 +1,3 @@
-App.Router = Ember.Router.extend({
-  // enableLogging: true,
-  root: App.ApplicationRoute.extend()
+App.Router.map(function(match) {
+	match('/').to('home');
 });
