@@ -1,2 +1,1 @@
-App.HomeRoute = Ember.Route.extend({
-});
+App.HomeRoute = Ember.Route.extend();
