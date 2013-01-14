@@ -33,7 +33,7 @@ module.exports = function(grunt) {
       libs: {
         src: [
           '<%= vendorDir %>/jquery-1.8.3.js',
-          '<%= vendorDir %>/handlebars-1.0.0.beta.6.js',
+          '<%= vendorDir %>/handlebars-1.0.rc.1.js',
           '<%= vendorDir %>/ember.js',
           '<%= vendorDir %>/ember-data.js'
         ],
@@ -63,7 +63,7 @@ module.exports = function(grunt) {
           '<%= appDir %>/Controller/*.js',
           '<%= appDir %>/View/*.js',
           '<%= appDir %>/Config/router.js',
-          '<%= appDir %>/Route/*.js',
+          '<%= appDir %>/Route/*.js'
         ],
         dest: '<%= distDir %>/application.js'
       },
