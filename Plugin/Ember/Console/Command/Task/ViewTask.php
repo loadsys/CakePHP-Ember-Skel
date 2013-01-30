@@ -1,6 +1,6 @@
 <?php
 
-App::uses('GenerateTask', 'Console/Command/Task');
+App::uses('GenerateTask', 'Ember.Console/Command/Task');
 
 class ViewTask extends GenerateTask {
 	public $validTypes = array('View', 'Container', 'Collection');

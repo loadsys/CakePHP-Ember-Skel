@@ -12,7 +12,6 @@ class GenerateTask extends AppShell {
 	public function startup() {
 		Configure::write('debug', 2);
 		Configure::write('Cache.disable', 1);
-		parent::startup();
 	}
 
 	protected function generateFile($name, $type = null) {

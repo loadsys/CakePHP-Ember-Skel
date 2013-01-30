@@ -1,6 +1,6 @@
 <?php
 
-App::uses('GenerateTask', 'Console/Command/Task');
+App::uses('GenerateTask', 'Ember.Console/Command/Task');
 
 class RouteTask extends GenerateTask {
 	public $classDir = 'Route';
