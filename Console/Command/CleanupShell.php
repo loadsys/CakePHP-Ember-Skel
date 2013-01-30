@@ -2,8 +2,8 @@
 
 App::uses('AppShell', 'Console/Command/Task');
 
-class CleanupTask extends AppShell {
-	public function execute() {
+class CleanupShell extends AppShell {
+	public function main() {
 		$rmGit = strtoupper($this->in('Remove the .git directory? [y/n]'));
 		if ($rmGit === 'Y') {
 			$this->out('Removing ' . APP . '.git');
