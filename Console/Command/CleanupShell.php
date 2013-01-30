@@ -1,6 +1,6 @@
 <?php
 
-App::uses('AppShell', 'Console/Command/Task');
+App::uses('AppShell', 'Console/Command');
 
 class CleanupShell extends AppShell {
 	public function main() {

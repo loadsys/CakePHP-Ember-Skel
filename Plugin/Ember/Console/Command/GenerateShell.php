@@ -1,8 +1,8 @@
 <?php
 
-App::uses('AppShell', 'Console/Command/Task');
+App::uses('AppShell', 'Console/Command');
 
-class BakeShell extends AppShell {
+class GenerateShell extends AppShell {
 	public $tasks = array('Controller', 'Model', 'View', 'Route');
 
 	public function main() {
