@@ -1,6 +1,8 @@
 <?php
 
-class EmberShell extends AppShell {
+App::uses('AppShell', 'Console/Command/Task');
+
+class BakeShell extends AppShell {
 	public $tasks = array('Controller', 'Model', 'View', 'Route');
 
 	public function main() {
