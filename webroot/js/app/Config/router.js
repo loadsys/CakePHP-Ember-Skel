@@ -1,3 +1,2 @@
-App.Router.map(function(match) {
-	match('/').to('home');
+App.Router.map(function {
 });
