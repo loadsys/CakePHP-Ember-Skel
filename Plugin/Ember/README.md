@@ -1,0 +1,1 @@
+# CakePHP Ember.js Plugin
