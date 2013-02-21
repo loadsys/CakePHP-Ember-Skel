@@ -51,6 +51,22 @@ class TemplateFile {
 		return sprintf($this->tag, $name, $content);
 	}
 
+	public function compiledContent() {
+		$node = exec('which node');
+		$path = dirname(__FILE__) . DS;
+		$file = $this->absolutePath();
+		$fl = $path . 'compile-template.js';
+		$tc = $path . 'ember-template-compiler.js';
+		$output = array();
+
+		if ($node) {
+			$content  = 'Ember.TEMPLATES["' . $this->templateName() . '"] = ';
+			exec(implode(' ', array('node', $fl, $tc, $file)), $output);
+			return $content . implode("\n", $output) . ';';
+		}
+		return "";
+	}
+
 	public function lastModified() {
 		return filemtime($this->absolutePath());
 	}

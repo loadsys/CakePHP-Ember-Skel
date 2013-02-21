@@ -49,6 +49,19 @@ class TemplateFileTest extends CakeTestCase {
 		$this->assertEqual($expected, $this->template->wrappedContent());
 	}
 
+	public function testGetsCompiledContent() {
+		$expected = "Ember.TEMPLATES[\"firstDir/secondTemplate\"] = Ember.Handlebars.compile(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+
+
+
+  data.buffer.push(\"Second Template\");
+
+});";
+		$this->assertEqual($expected, $this->template->compiledContent());
+	}
+
 	public function testGetsFileModificationTime() {
 		$this->assertTrue(is_int($this->template->lastModified()));
 	}

@@ -25,7 +25,7 @@ class HandlebarsHelperTest extends CakeTestCase {
 		parent::setUp();
 		$this->basePath = APP.'Plugin'.DS.'Ember'.DS.'Test';
 		$this->View = $this->getMock('View', array('append'), array(new TestController()));
-		$settings = array('basePath' => $this->basePath);
+		$settings = array('cache' => false, 'basePath' => $this->basePath);
 		$this->Handlebars = new TestHandlebarsHelper($this->View, $settings);
 		Configure::write('Asset.timestamp', false);
 	}
@@ -64,6 +64,7 @@ class HandlebarsHelperTest extends CakeTestCase {
 	}
 
 	public function testRendersAllTheTemplatesWrappedInScriptTags() {
+		$this->Handlebars->compile = false;
 		$expected = '<script type="text/x-handlebars" data-template-name="firstDir/_firstPartial">
 First Partial
 </script>
@@ -73,6 +74,38 @@ Second Template
 <script type="text/x-handlebars" data-template-name="firstTemplate">
 First Template
 </script>';
+		$this->assertEqual($expected, $this->Handlebars->templates('tmp'));
+		$this->Handlebars->compile = true;
+	}
+
+	public function testRendersAllTheTemplatesCompiledInOneScriptTag() {
+		$expected = "<script>Ember.TEMPLATES[\"firstDir/_firstPartial\"] = Ember.Handlebars.compile(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+
+
+
+  data.buffer.push(\"First Partial\");
+
+});
+Ember.TEMPLATES[\"firstDir/secondTemplate\"] = Ember.Handlebars.compile(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+
+
+
+  data.buffer.push(\"Second Template\");
+
+});
+Ember.TEMPLATES[\"firstTemplate\"] = Ember.Handlebars.compile(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+
+
+
+  data.buffer.push(\"First Template\");
+
+});</script>";
 		$this->assertEqual($expected, $this->Handlebars->templates('tmp'));
 	}
 }

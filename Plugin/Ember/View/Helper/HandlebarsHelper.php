@@ -9,10 +9,17 @@ class HandlebarsHelper extends AppHelper {
 	public $basePath = null;
 	public $ext = array('handlebars', 'hbs');
 	public $regex = "/^(.)+\.(%s){1}$/";
+	public $compile = true;
 	public $cache = true;
 
 	public function __construct($View, $settings = array()) {
 		parent::__construct($View, $settings);
+
+		foreach (array('ext', 'cache') as $opt) {
+			if (isset($settings[$opt])) {
+				$this->{$opt} = $settings[$opt];
+			}
+		}
 
 		if (isset($settings['basePath'])) {
 			$this->basePath = $settings['basePath'];
@@ -30,15 +37,28 @@ class HandlebarsHelper extends AppHelper {
 			$c = '';
 			if ($this->cache) {
 				if (!$c = Cache::read($file->cacheName())) {
-					$c = $file->wrappedContent();
+					$c = $this->getContent($file);
 					Cache::write($file->cacheName(), $c);
 				}
 			} else {
-				$c = $file->wrappedContent();
+				$c = $this->getContent($file);
 			}
 			$content[] = $c;
 		}
-		return implode("\n", $content);
+		$content = implode("\n", $content);
+		if ($this->compile) {
+			$content = '<script>' . $content . '</script>';
+		}
+		return $content;
+	}
+
+	protected function getContent($file) {
+		if ($this->compile) {
+			$content = $file->compiledContent();
+		} else {
+			$content = $file->wrappedContent();
+		}
+		return $content;
 	}
 
 	protected function _buildPaths($path) {
