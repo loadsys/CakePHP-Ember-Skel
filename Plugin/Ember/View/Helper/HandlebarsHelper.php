@@ -15,7 +15,7 @@ class HandlebarsHelper extends AppHelper {
 	public function __construct($View, $settings = array()) {
 		parent::__construct($View, $settings);
 
-		foreach (array('ext', 'cache') as $opt) {
+		foreach (array('ext', 'compile', 'cache') as $opt) {
 			if (isset($settings[$opt])) {
 				$this->{$opt} = $settings[$opt];
 			}
