@@ -6,6 +6,7 @@
   <?php echo $this->Html->css('mocha'); ?>
 </head>
 <body>
+  <div id="ember-app" style="display:none"></div>
   <div id="mocha"></div>
   <?php echo $this->Handlebars->templates('js/app/Template'); ?>
   <?php echo $this->Html->script(array(
