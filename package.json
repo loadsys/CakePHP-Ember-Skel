@@ -6,6 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "grunt": "~0.3.17",
+	"grunt-mincer": "~0.2.0",
     "mocha-phantomjs": "~1.1.0"
   }
 }

@@ -1,5 +1,9 @@
 /*global module:false*/
 module.exports = function(grunt) {
+  var path = require('path');
+  var include = require('./include_paths');
+
+  grunt.loadNpmTasks('grunt-mincer');
 
   // Project configuration.
   grunt.initConfig({
@@ -11,10 +15,22 @@ module.exports = function(grunt) {
         '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
         ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
     },
-    appDir:    'webroot/js/app',
-    vendorDir: 'webroot/js/vendor',
-    distDir:   'webroot/js/dist',
-    specsDir:  'webroot/js/specs',
+    appDir:    path.normalize(__dirname + '/webroot/js/app'),
+    vendorDir: path.normalize(__dirname + '/webroot/js/vendor'),
+    distDir:   path.normalize(__dirname + '/webroot/js/dist'),
+    specsDir:  path.normalize(__dirname + '/webroot/js/specs'),
+    mince: {
+      app: {
+        include: include,
+        src: path.normalize(__dirname + '/webroot/js/app/application.js'),
+        dest: path.normalize(__dirname + '/webroot/js/dist/application.js')
+      },
+      lib: {
+        include: include,
+        src: path.normalize(__dirname + '/webroot/js/app/libraries.js'),
+        dest: path.normalize(__dirname + '/webroot/js/dist/libraries.js')
+      }
+    },
     concat: {
       setup: {
         src: [
@@ -32,15 +48,6 @@ module.exports = function(grunt) {
         ],
         dest: '<%= distDir %>/spec_setup.js'
       },
-      libs: {
-        src: [
-          '<%= vendorDir %>/jquery-1.9.0.js',
-          '<%= vendorDir %>/handlebars.js',
-          '<%= vendorDir %>/ember.js',
-          '<%= vendorDir %>/ember-data.js'
-        ],
-        dest: '<%= distDir %>/libraries.js'
-      },
       specLibs: {
         src: [
           '<%= vendorDir %>/mocha.js',
@@ -51,17 +58,6 @@ module.exports = function(grunt) {
       specInit: {
         src: ['<%= appDir %>/Config/fixtures.js'],
         dest: '<%= distDir %>/spec_init.js'
-      },
-      app: {
-        src: [
-          '<%= appDir %>/Model/*.js',
-          '<%= appDir %>/Controller/*.js',
-          '<%= appDir %>/View/*.js',
-          '<%= appDir %>/Config/router.js',
-          '<%= appDir %>/Route/*.js',
-          '<%= appDir %>/Config/seed.js'
-        ],
-        dest: '<%= distDir %>/application.js'
       },
       specs: {
         src: ['<%= specsDir %>/**/*.js'],
@@ -84,13 +80,13 @@ module.exports = function(grunt) {
     },
     watch: {
       files: '<%= appDir %>/**/*.js',
-      tasks: 'concat'
+      tasks: 'mince concat'
     }
   });
 
   // Default task.
-  grunt.registerTask('default', 'concat');
+  grunt.registerTask('default', 'mince concat');
 
   // Build task.
-  grunt.registerTask('build', 'concat min');
+  grunt.registerTask('build', 'mince concat min');
 };
