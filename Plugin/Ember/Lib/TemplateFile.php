@@ -62,9 +62,11 @@ class TemplateFile {
 		if ($node) {
 			$content  = 'Ember.TEMPLATES["' . $this->templateName() . '"] = ';
 			exec(implode(' ', array('node', $fl, $tc, $file)), $output);
-			return $content . implode("\n", $output) . ';';
+			$content = $content . implode("\n", $output) . ';';
+		} else {
+			$content = $this->wrappedContent();
 		}
-		return "";
+		return $content;
 	}
 
 	public function lastModified() {

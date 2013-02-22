@@ -46,7 +46,7 @@ class HandlebarsHelper extends AppHelper {
 			$content[] = $c;
 		}
 		$content = implode("\n", $content);
-		if ($this->compile) {
+		if ($this->_reallyCompile()) {
 			$content = '<script>' . $content . '</script>';
 		}
 		return $content;
@@ -85,5 +85,9 @@ class HandlebarsHelper extends AppHelper {
 			throw new InvalidSettingException('The ext setting must be a string or array of strings');
 		}
 		return sprintf($this->regex, $regex);
+	}
+
+	protected function _reallyCompile() {
+		return $this->compile && !!exec('which node');
 	}
 }
