@@ -15,8 +15,7 @@
 		<?php echo $this->Html->script(array(
 			'dist/libraries',
 			'dist/setup',
-			'dist/application',
-			'dist/initialize'
+			'dist/application'
 		)); ?>
 	<?php else: ?>
 		<?php echo $this->Html->script(array('dist/libraries.min', 'dist/application.min')); ?>

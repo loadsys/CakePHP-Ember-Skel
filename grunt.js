@@ -19,13 +19,15 @@ module.exports = function(grunt) {
       setup: {
         src: [
           '<%= appDir %>/Config/setup.js',
+          '<%= appDir %>/Config/store.js',
           '<%= appDir %>/Config/utilities.js'
         ],
         dest: '<%= distDir %>/setup.js'
       },
       specSetup: {
         src: [
-          '<%= appDir %>/Config/spec_setup.js',
+          '<%= appDir %>/Config/setup.js',
+          '<%= appDir %>/Config/spec_store.js',
           '<%= appDir %>/Config/utilities.js'
         ],
         dest: '<%= distDir %>/spec_setup.js'
@@ -46,13 +48,6 @@ module.exports = function(grunt) {
         ],
         dest: '<%= distDir %>/spec_libs.js'
       },
-      init: {
-        src: [
-          '<%= appDir %>/Config/initialize.js',
-          '<%= appDir %>/Config/seed.js'
-        ],
-        dest: '<%= distDir %>/initialize.js'
-      },
       specInit: {
         src: ['<%= appDir %>/Config/fixtures.js'],
         dest: '<%= distDir %>/spec_init.js'
@@ -63,7 +58,8 @@ module.exports = function(grunt) {
           '<%= appDir %>/Controller/*.js',
           '<%= appDir %>/View/*.js',
           '<%= appDir %>/Config/router.js',
-          '<%= appDir %>/Route/*.js'
+          '<%= appDir %>/Route/*.js',
+          '<%= appDir %>/Config/seed.js'
         ],
         dest: '<%= distDir %>/application.js'
       },
@@ -80,8 +76,7 @@ module.exports = function(grunt) {
       app: {
         src: [
           '<%= distDir %>/setup.js',
-          '<%= distDir %>/application.js',
-          '<%= distDir %>/initialize.js'
+          '<%= distDir %>/application.js'
         ],
         dest: '<%= distDir %>/application.min.js',
         separator: ';'
