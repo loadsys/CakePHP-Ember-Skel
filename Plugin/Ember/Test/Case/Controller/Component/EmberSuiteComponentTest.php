@@ -48,4 +48,35 @@ class EmberSuiteComponentTest extends CakeTestCase {
 		$this->EmberSuite->startup($this->Controller);
 		$this->assertTrue(isset($this->Controller->EmberData));
 	}
+
+	public function testComponentAndHelperOptionsAreTakenOutOfOptionsArray() {
+		$options = array(
+			'helpers' => array('setting' => 'value'),
+			'components' => array('value' => 'setting')
+		);
+		$EmberSuite = new TestEmberSuiteComponent($this->getMock('ComponentCollection'), $options);
+		$this->assertEqual(array('setting' => 'value'), $EmberSuite->_helperOptions);
+		$this->assertEqual(array('value' => 'setting'), $EmberSuite->_componentOptions);
+	}
+
+	public function testPassesOptionsForHandlebarsHelperToTheHelper() {
+		$Controller = new EmberSuiteTestController($this->request);
+		$options = array(
+			'helpers' => array('Handlebars' => array('compile' => false)),
+		);
+		$EmberSuite = new TestEmberSuiteComponent($this->getMock('ComponentCollection'), $options);
+		$EmberSuite->startup($Controller);
+		$expected = array('Ember.Handlebars' => array('compile' => false));
+		$this->assertEqual($expected, $Controller->helpers);
+	}
+
+	public function testPassesOptionsForEmberDataComponentToComponent() {
+		$Controller = new EmberSuiteTestController($this->request);
+		$options = array(
+			'components' => array('EmberData' => array('dataKey' => 'emberData')),
+		);
+		$EmberSuite = new TestEmberSuiteComponent($this->getMock('ComponentCollection'), $options);
+		$EmberSuite->startup($Controller);
+		$this->assertEqual('emberData', $Controller->EmberData->dataKey);
+	}
 }
