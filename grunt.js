@@ -35,7 +35,7 @@ module.exports = function(grunt) {
       libs: {
         src: [
           '<%= vendorDir %>/jquery-1.9.0.js',
-          '<%= vendorDir %>/handlebars-1.0.rc.2.js',
+          '<%= vendorDir %>/handlebars.js',
           '<%= vendorDir %>/ember.js',
           '<%= vendorDir %>/ember-data.js'
         ],
