@@ -1,6 +1,7 @@
-tmp/*
-Config/cake.php
+Config/core.php
 Config/database.php
 Lib/Cake
 webroot/js/dist
+tmp/*
+
 node_modules
