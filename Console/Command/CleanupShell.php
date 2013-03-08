@@ -17,16 +17,19 @@ class CleanupShell extends AppShell {
 		if ($lnCore === 'Y') {
 			$this->out('Symlinking CakePHP core in ' . APP . 'Lib');
 			shell_exec('ln -s ' . CAKE_CORE_INCLUDE_PATH . DS . 'Cake ' . APP . 'Lib/Cake');
-			$path = APP.WEBROOT_DIR.DS.'index.php';
-			$content = file_get_contents($path);
-			$handle = fopen($path, 'w');
-			$content = preg_replace(
-				"/define\('CAKE_CORE_INCLUDE_PATH', .+\);/",
-				"define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . APP_DIR . DS . 'Lib');",
-				$content
-			);
-			fwrite($handle, $content);
-			fclose($handle);
+			foreach (array('index.php', 'test.php') as $file) {
+				$path = APP.WEBROOT_DIR.DS.$file;
+				$content = file_get_contents($path);
+				$handle = fopen($path, 'w');
+				$content = preg_replace(
+					"/define\('CAKE_CORE_INCLUDE_PATH', .+\);/",
+					"define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . APP_DIR . DS . 'Lib');",
+					$content
+				);
+				fwrite($handle, $content);
+				fclose($handle);
+			}
+			shell_exec('mv '.APP.'Console'.DS.'cake.php.default '.APP.'Console'.DS.'cake.php');
 		} elseif ($lnCore !== 'N') {
 			$this->out("You didn't respond with y or n, so core was not symlinked");
 		}
