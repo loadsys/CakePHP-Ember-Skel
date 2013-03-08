@@ -8,5 +8,10 @@
     "grunt": "~0.3.17",
 	"grunt-mincer": "~0.2.0",
     "mocha-phantomjs": "~1.1.0"
-  }
+  },
+  "mincer_paths": [
+    "/webroot/js/app",
+    "/webroot/js/lib",
+    "/webroot/js/vendor"
+  ]
 }

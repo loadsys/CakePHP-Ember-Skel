@@ -1,7 +1,9 @@
 /*global module:false*/
 module.exports = function(grunt) {
   var path = require('path');
-  var include = require('./include_paths');
+  var mincerPaths = require('./package').mincer_paths.map(function(i) {
+    return path.join(__dirname, i);
+  });
 
   grunt.loadNpmTasks('grunt-mincer');
 
@@ -21,12 +23,12 @@ module.exports = function(grunt) {
     specsDir:  path.normalize(__dirname + '/webroot/js/specs'),
     mince: {
       app: {
-        include: include,
+        include: mincerPaths,
         src: path.normalize(__dirname + '/webroot/js/app/application.js'),
         dest: path.normalize(__dirname + '/webroot/js/dist/application.js')
       },
       lib: {
-        include: include,
+        include: mincerPaths,
         src: path.normalize(__dirname + '/webroot/js/app/libraries.js'),
         dest: path.normalize(__dirname + '/webroot/js/dist/libraries.js')
       }
